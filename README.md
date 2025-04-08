@@ -1,12 +1,44 @@
-# React + Vite
+# Front Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este es el frontend del proyecto desarrollado para la materia de Software III.
 
-Currently, two official plugins are available:
+## Tecnologías
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React
+- Vite
+- ESLint
 
-## Expanding the ESLint configuration
+## Instalación
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Clona el repositorio:
+
+```bash
+git clone https://github.com/Cruz1122/front-project.git
+cd front-project
+```
+
+2. Instala las dependencias:
+
+```bash
+npm install
+```
+
+3. Inicia el servidor de desarrollo:
+
+```bash
+npm run dev
+```
+
+## Estructura del proyecto
+
+- `src/` - Código fuente de la aplicación.
+- `public/` - Archivos estáticos y recursos públicos.
+- `index.html` - Archivo HTML principal.
+- `package.json` - Archivo de configuración de npm.
+- `vite.config.js` - Configuración de Vite.
+- `.gitignore` - Especifica archivos y directorios que Git debe ignorar.
+- `eslint.config.js` - Configuración de ESLint.
+
+## Licencia
+
+MIT
