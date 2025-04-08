@@ -1,6 +1,6 @@
 # Front Project
 
-Este es el frontend del proyecto desarrollado para la materia de Software III.
+Este es el frontend del proyecto desarrollado para la materia de Software II.
 
 ## Tecnologías
 
