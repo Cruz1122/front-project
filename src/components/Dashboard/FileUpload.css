@@ -1,8 +1,8 @@
 .file-upload-container {
-  background-color: #222222;
-  color: #ffffff;
   padding: 2rem;
-  border-radius: 12px;
+  background-color: #222222;
+  color: white;
+  border-radius: 10px;
   max-width: 600px;
   margin: 2rem auto;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
@@ -15,32 +15,46 @@ h2, h3 {
 .upload-section {
   display: flex;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   align-items: center;
+}
+
+.upload-section input,
+.upload-section button {
+  margin-right: 1rem;
+  padding: 0.5rem;
+  background-color: #1dcd9f;
+  border: none;
+  color: black;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
 .upload-section input[type="file"] {
   background-color: #000000;
   color: #fff;
-  padding: 0.5rem;
   border: 1px solid #169976;
-  border-radius: 6px;
 }
 
-.upload-section button {
-  background-color: #1dcd9f;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
-  color: #000000;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.upload-section button:hover {
+.upload-section button:disabled {
   background-color: #169976;
-  color: #ffffff;
+  cursor: not-allowed;
+}
+
+.table-section {
+  margin-top: 2rem;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #000000;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.75rem;
+  border: 1px solid #1dcd9f;
 }
 
 .files-list ul {
@@ -64,16 +78,20 @@ h2, h3 {
 }
 
 .pagination button {
-  background-color: transparent;
-  border: 1px solid #1dcd9f;
-  color: #1dcd9f;
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  background-color: #169976;
+  border: none;
+  color: white;
   cursor: pointer;
+  border-radius: 5px;
   transition: all 0.3s ease;
 }
 
-.pagination button.active,
+.pagination button.active {
+  background-color: #1dcd9f;
+  font-weight: bold;
+}
+
 .pagination button:hover {
   background-color: #1dcd9f;
   color: #000000;

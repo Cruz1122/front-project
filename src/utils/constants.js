@@ -8,5 +8,6 @@ export const ENV = {
     SIGNIN: "/auth/signin",
     SIGNUP: "/auth/signup",
     VERIFY_CODE: "/auth/sms-verify",
+    UPLOAD: "/geo/upload-csv",
   },
 };

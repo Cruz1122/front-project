@@ -7,7 +7,6 @@ import './App.css';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Estado para controlar la vista
   const [isCodeVerified, setIsCodeVerified] = useState(false);
-  console.log("isLoggedIn", isLoggedIn);
   return (
     <>
       {isLoggedIn ? (

@@ -1,42 +1,40 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import { jwtDecode } from "jwt-decode";
-import { useSelector } from "react-redux";
 import "./FileUpload.css";
+import { upload } from "../../api/upload";
 
 const FileUpload = () => {
-  const token = localStorage.getItem("token"); // o sessionStorage.getItem("token")
+  const token = localStorage.getItem("token");
   let role = null;
 
   if (token) {
     try {
       const decoded = jwtDecode(token);
-      role = decoded?.role || null; // Asegúrate de que el token tenga una propiedad 'role'
+      role = decoded?.role || null;
     } catch (e) {
       console.error("Token inválido:", e);
     }
   }
+
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const filesPerPage = 5;
+  const rowsPerPage = 10;
 
-  console.log("role", role);
-  
   const isSuperAdmin = role === "SUPERADMIN";
 
   useEffect(() => {
-    if (isSuperAdmin) fetchFiles();
+    if (isSuperAdmin) fetchData();
   }, []);
 
-  const fetchFiles = async () => {
+  const fetchData = async () => {
     try {
-      const response = await fetch("/api/files");
+      const response = await fetch("/api/files/data");
       const data = await response.json();
-      setUploadedFiles(data);
+      setTableData(data);
     } catch (error) {
-      console.error("Error al obtener archivos:", error);
+      console.error("Error al obtener datos:", error);
     }
   };
 
@@ -49,16 +47,14 @@ const FileUpload = () => {
     setUploading(true);
 
     const formData = new FormData();
+    formData.append("key", "file");
     formData.append("file", file);
 
     try {
-      const response = await fetch("/api/files/upload", {
-        method: "POST",
-        body: formData,
-      });
-
+      const response = await upload.uploadFile(formData);
+        
       if (response.ok) {
-        await fetchFiles();
+        await fetchData();
         setFile(null);
       } else {
         console.error("Error en la subida del archivo.");
@@ -70,12 +66,12 @@ const FileUpload = () => {
     }
   };
 
-  const paginatedFiles = uploadedFiles.slice(
-    (currentPage - 1) * filesPerPage,
-    currentPage * filesPerPage
+  const paginatedData = tableData.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
   );
 
-  const totalPages = Math.ceil(uploadedFiles.length / filesPerPage);
+  const totalPages = Math.ceil(tableData.length / rowsPerPage);
 
   if (!isSuperAdmin) {
     return (
@@ -87,7 +83,7 @@ const FileUpload = () => {
 
   return (
     <div className="file-upload-container">
-      <h2>Gestión de Archivos CSV</h2>
+      <h2>Gestión de Municipios y Departamentos</h2>
       <div className="upload-section">
         <input type="file" accept=".csv" onChange={handleFileChange} />
         <button onClick={handleUpload} disabled={uploading || !file}>
@@ -95,16 +91,27 @@ const FileUpload = () => {
         </button>
       </div>
 
-      <div className="files-list">
-        <h3>Archivos Cargados</h3>
-        {paginatedFiles.length === 0 ? (
-          <p>No hay archivos aún.</p>
+      <div className="table-section">
+        <h3>Datos Cargados</h3>
+        {paginatedData.length === 0 ? (
+          <p>No hay datos disponibles.</p>
         ) : (
-          <ul>
-            {paginatedFiles.map((file, index) => (
-              <li key={index}>{file.name}</li>
-            ))}
-          </ul>
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Municipio</th>
+                <th>Departamento</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedData.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.municipio}</td>
+                  <td>{item.departamento}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
 
         {totalPages > 1 && (
@@ -123,10 +130,6 @@ const FileUpload = () => {
       </div>
     </div>
   );
-};
-
-FileUpload.propTypes = {
-  role: PropTypes.string,
 };
 
 export default FileUpload;
