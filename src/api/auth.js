@@ -10,8 +10,22 @@ export class Auth {
             },
             body: JSON.stringify(data),
         })
-        console.log(response);
+        console.log("response", response);
         
+        return response;
+    }
+
+    async verifyCode(data) {
+        const response = await fetch(`${ENV.BASE_API}${API_ROUTES.VERIFY_CODE}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        })
+        console.log("response", response);
+        
+        return response;
     }
 }
 

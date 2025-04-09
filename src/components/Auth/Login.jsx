@@ -3,11 +3,11 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./Login.css";
 import { auth } from "../../api/auth";
-import { setLoading } from "../../redux/authSlice";
+import { setLoading, setUser } from "../../redux/authSlice";
 
 const { Title } = Typography;
 
-const Login = () => {
+const Login = ({ onLoginSuccess }) => {
   const [formData, setFormData] = React.useState({
     email: "",
     current_password: "",
@@ -19,21 +19,19 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [loginError, setLoginError] = useState(null);
 
-  console.log(isAuthenticated);
-
   const validateForm = () => {
     const newErrors = {};
 
     // Validación de email
     if (!formData.email) {
-      newErrors.email = "Email is required!";
+      newErrors.email = "¡Se requiere un correo electrónico!";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Invalid email format";
+      newErrors.email = "Formato de correo electrónico inválido";
     }
 
     // Validación de password
     if (!formData.current_password) {
-      newErrors.current_password = "Password is required!";
+      newErrors.current_password = "¡Se requiere una contraseña!";
     }
 
     setErrors(newErrors);
@@ -61,47 +59,65 @@ const Login = () => {
     dispatch(setLoading(true)); // Cambiar el estado de carga a true
     try {
       const response = await auth.signIn(formData);
-      console.log(response);
+
+      if (response.ok) {
+        // Despachar la acción setUser con el correo y token
+        dispatch(
+          setUser({
+            isAuthenticated: true,
+            email: formData.email, // Guardar el correo ingresado
+          })
+        );
+
+        onLoginSuccess();
+      } else {
+        setLoginError(
+          "Error al iniciar sesión. Por favor, verifica tus credenciales."
+        );
+      }
     } catch (error) {
-      setLoginError("Invalid email or password"); // Manejo de error de inicio de sesión
+      setLoginError("Correo electrónico o contraseña inválidos."); // Manejo de error de inicio de sesión
+    } finally {
+      dispatch(setLoading(false)); // Asegurarse de desactivar el estado de carga
     }
   };
 
   return (
     <div className="login-container">
       <Title level={2} style={{ textAlign: "center" }}>
-        LogIn
+        Iniciar sesión
       </Title>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">Correo electrónico</label>
           <input
             type="email"
             id="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="Enter your email"
+            placeholder="Ingresa tu correo electrónico"
           />
           {errors.email && <span className="field-error">{errors.email}</span>}
         </div>
 
         <div className="form-group">
-          <label htmlFor="current_password">Password</label>
+          <label htmlFor="current_password">Contraseña</label>
           <input
             type="password"
             id="current_password"
             name="current_password"
             value={formData.current_password}
             onChange={handleChange}
-            placeholder="Enter your password"
+            placeholder="Ingresa tu contraseña"
+            autoComplete="current-password"
           />
           {errors.current_password && (
             <span className="field-error">{errors.current_password}</span>
           )}
         </div>
         <button type="submit" className="login-button" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Iniciando sesión..." : "Iniciar sesión"}
         </button>
       </form>
     </div>

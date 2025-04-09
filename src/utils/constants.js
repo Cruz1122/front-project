@@ -7,5 +7,6 @@ export const ENV = {
   API_ROUTES: {
     SIGNIN: "/auth/signin",
     SIGNUP: "/auth/signup",
+    VERIFY_CODE: "/auth/sms-verify",
   },
 };

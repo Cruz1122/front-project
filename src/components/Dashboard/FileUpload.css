@@ -1,0 +1,87 @@
+.file-upload-container {
+  background-color: #222222;
+  color: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 600px;
+  margin: 2rem auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+h2, h3 {
+  color: #1dcd9f;
+}
+
+.upload-section {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.upload-section input[type="file"] {
+  background-color: #000000;
+  color: #fff;
+  padding: 0.5rem;
+  border: 1px solid #169976;
+  border-radius: 6px;
+}
+
+.upload-section button {
+  background-color: #1dcd9f;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  color: #000000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.upload-section button:hover {
+  background-color: #169976;
+  color: #ffffff;
+}
+
+.files-list ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.files-list li {
+  background-color: #000000;
+  padding: 0.6rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  border: 1px solid #1dcd9f;
+}
+
+.pagination {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.pagination button {
+  background-color: transparent;
+  border: 1px solid #1dcd9f;
+  color: #1dcd9f;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination button.active,
+.pagination button:hover {
+  background-color: #1dcd9f;
+  color: #000000;
+}
+
+.unauthorized {
+  text-align: center;
+  color: #ff4d4f;
+  font-weight: bold;
+  margin-top: 2rem;
+}
