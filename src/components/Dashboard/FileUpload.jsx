@@ -30,7 +30,7 @@ const FileUpload = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("/api/files/data");
+      const response = await fetch("http://localhost:3000/api/v1/geo/municipios");
       const data = await response.json();
       setTableData(data);
     } catch (error) {
@@ -47,12 +47,12 @@ const FileUpload = () => {
     setUploading(true);
 
     const formData = new FormData();
-    formData.append("key", "file");
-    formData.append("file", file);
+    formData.append("file", file); 
 
     try {
       const response = await upload.uploadFile(formData);
-        
+      console.log("response", response); // <-- te muestra si hay error 400
+
       if (response.ok) {
         await fetchData();
         setFile(null);
@@ -105,7 +105,7 @@ const FileUpload = () => {
             </thead>
             <tbody>
               {paginatedData.map((item, index) => (
-                <tr key={index}>
+                <tr key={[index]}>
                   <td>{item.municipio}</td>
                   <td>{item.departamento}</td>
                 </tr>
