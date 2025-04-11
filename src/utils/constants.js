@@ -9,5 +9,6 @@ export const ENV = {
     SIGNUP: "/auth/signup",
     VERIFY_CODE: "/auth/sms-verify",
     UPLOAD: "/geo/upload-csv",
+    GET_MUNICIPIOS: "/geo/municipios",
   },
 };

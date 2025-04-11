@@ -18,25 +18,12 @@ const FileUpload = () => {
 
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [tableData, setTableData] = useState([]);
+  const [data, setData] = useState([]);
+  const [fetched, setFetched] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10;
+  const itemsPerPage = 10;
 
   const isSuperAdmin = role === "SUPERADMIN";
-
-  useEffect(() => {
-    if (isSuperAdmin) fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/v1/geo/municipios");
-      const data = await response.json();
-      setTableData(data);
-    } catch (error) {
-      console.error("Error al obtener datos:", error);
-    }
-  };
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -46,32 +33,55 @@ const FileUpload = () => {
     if (!file) return;
     setUploading(true);
 
-    const formData = new FormData();
-    formData.append("file", file); 
-
     try {
-      const response = await upload.uploadFile(formData);
-      console.log("response", response); // <-- te muestra si hay error 400
+      const response = await upload.uploadFile(file);
+      const result = await response.json();
 
       if (response.ok) {
-        await fetchData();
+        alert("Archivo subido correctamente.");
         setFile(null);
+        fetchMunicipios(); // recargar los datos
       } else {
-        console.error("Error en la subida del archivo.");
+        alert(result.error || "Error al subir el archivo.");
       }
-    } catch (error) {
-      console.error("Error al subir archivo:", error);
+    } catch (err) {
+      console.error("Error al subir archivo:", err);
+      alert("Ocurrió un error al subir el archivo.");
     } finally {
       setUploading(false);
     }
   };
 
-  const paginatedData = tableData.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
+  const fetchMunicipios = async () => {
+    try {
+      const response = await upload.getMunicipios();
+      const result = await response.json();
 
-  const totalPages = Math.ceil(tableData.length / rowsPerPage);
+      if (response.ok) {
+        const parsed = result.municipios.map((m) => ({
+          municipio: m.nombre,
+          departamento: m.departamento?.nombre || "Desconocido",
+        }));
+        setData(parsed);
+      } else {
+        console.error("Error al obtener municipios:", result.error);
+      }
+    } catch (err) {
+      console.error("Error de red al obtener municipios:", err);
+    } finally {
+      setFetched(true);
+    }
+  };
+
+  useEffect(() => {
+    fetchMunicipios();
+  }, []);
+
+  // Paginación
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const paginatedData = data.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(data.length / itemsPerPage);
 
   if (!isSuperAdmin) {
     return (
@@ -83,7 +93,7 @@ const FileUpload = () => {
 
   return (
     <div className="file-upload-container">
-      <h2>Gestión de Municipios y Departamentos</h2>
+      <h2>GESTIÓN DE MUNICIPIOS Y DEPARTAMENTOS</h2>
       <div className="upload-section">
         <input type="file" accept=".csv" onChange={handleFileChange} />
         <button onClick={handleUpload} disabled={uploading || !file}>
@@ -91,43 +101,75 @@ const FileUpload = () => {
         </button>
       </div>
 
-      <div className="table-section">
-        <h3>Datos Cargados</h3>
-        {paginatedData.length === 0 ? (
-          <p>No hay datos disponibles.</p>
-        ) : (
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Municipio</th>
-                <th>Departamento</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedData.map((item, index) => (
-                <tr key={[index]}>
-                  <td>{item.municipio}</td>
-                  <td>{item.departamento}</td>
+      {fetched && (
+        <div className="table-section">
+          <h3>DATOS CARGADOS</h3>
+          {paginatedData.length === 0 ? (
+            <p>No hay datos disponibles.</p>
+          ) : (
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Municipio</th>
+                  <th>Departamento</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+              </thead>
+              <tbody>
+                {paginatedData.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.municipio}</td>
+                    <td>{item.departamento}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
 
-        {totalPages > 1 && (
-          <div className="pagination">
-            {Array.from({ length: totalPages }, (_, i) => (
+          {totalPages > 1 && (
+            <div className="pagination">
               <button
-                key={i}
-                onClick={() => setCurrentPage(i + 1)}
-                className={currentPage === i + 1 ? "active" : ""}
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
               >
-                {i + 1}
+                Primera
               </button>
-            ))}
-          </div>
-        )}
-      </div>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter(
+                  (page) =>
+                    page === 1 ||
+                    page === totalPages ||
+                    (page >= currentPage - 1 && page <= currentPage + 1)
+                )
+                .map((page, index, arr) => {
+                  const prevPage = arr[index - 1];
+                  const isEllipsis = prevPage && page - prevPage > 1;
+                  return (
+                    <React.Fragment key={page}>
+                      {isEllipsis && <span className="ellipsis">...</span>}
+                      <button
+                        onClick={() => setCurrentPage(page)}
+                        className={currentPage === page ? "active" : ""}
+                      >
+                        {page}
+                      </button>
+                    </React.Fragment>
+                  );
+                })}
+
+              <button
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={currentPage === totalPages}
+              >
+                Última
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+      <button className="refresh-button" onClick={fetchMunicipios} disabled={uploading}>
+        Recargar
+      </button>
     </div>
   );
 };

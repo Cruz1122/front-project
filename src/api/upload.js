@@ -14,6 +14,15 @@ export class Upload {
     console.log("response", response);
     return response;
   }
+
+  async getMunicipios() {
+    const response = await fetch(`${BASE_API}${API_ROUTES.GET_MUNICIPIOS}`, {
+      method: "GET",
+    });
+
+    console.log("response", response);
+    return response;
+  }
 }
 
 export const upload = new Upload()

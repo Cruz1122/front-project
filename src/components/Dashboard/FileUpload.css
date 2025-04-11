@@ -25,7 +25,7 @@ h2, h3 {
   padding: 0.5rem;
   background-color: #1dcd9f;
   border: none;
-  color: black;
+  color: white;
   cursor: pointer;
   border-radius: 5px;
 }
@@ -48,13 +48,28 @@ h2, h3 {
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: #000000;
+  background-color: #222222;
+  margin-top: 20px;
 }
 
 .data-table th,
 .data-table td {
   padding: 0.75rem;
   border: 1px solid #1dcd9f;
+}
+
+.data-table th {
+  background-color: #1dcd9f;
+}
+
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) {
+  width: 50%; /* Ajusta según lo que necesites */
+}
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+  width: 50%; /* Ajusta según lo que necesites */
 }
 
 .files-list ul {
@@ -102,4 +117,13 @@ h2, h3 {
   color: #ff4d4f;
   font-weight: bold;
   margin-top: 2rem;
+}
+
+.ellipsis {
+  margin: 0 5px;
+  font-weight: bold;
+}
+
+.refresh-button {
+  margin-top: 20px;
 }
